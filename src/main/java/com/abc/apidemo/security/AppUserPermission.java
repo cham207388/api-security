@@ -1,7 +1,9 @@
 package com.abc.apidemo.security;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum AppUserPermission {
 	STUDENT_READ("student:read"),
