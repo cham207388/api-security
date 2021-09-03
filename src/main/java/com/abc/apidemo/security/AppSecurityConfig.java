@@ -1,6 +1,6 @@
 package com.abc.apidemo.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,20 +16,21 @@ import static com.abc.apidemo.security.AppUserRole.*;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	/**
 	 * configure authentication type -basic
 	 * whitelist some paths - actuator, index, and maybe
 	 * @param http security
-	 * @throws Exception
+	 * @throws Exception e
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
+		http.csrf().disable()
+				.authorizeRequests()
 				.antMatchers("/actuator/*", "/index.html", "/").permitAll()
 				.antMatchers("/api/v1/**").hasRole(STUDENT.name())
 				.anyRequest()
@@ -51,6 +52,12 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 				.password(passwordEncoder.encode("password"))
 				.roles(ADMIN.name())
 				.build();
-		return new InMemoryUserDetailsManager(abc, admin);
+
+		UserDetails adminTrainee = User.builder()
+				.username("admintrainee")
+				.password(passwordEncoder.encode("password"))
+				.roles(ADMIN_TRAINEE.name())
+				.build();
+		return new InMemoryUserDetailsManager(abc, admin, adminTrainee);
 	}
 }

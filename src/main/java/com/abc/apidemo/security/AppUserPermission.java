@@ -1,5 +1,8 @@
 package com.abc.apidemo.security;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum AppUserPermission {
 	STUDENT_READ("student:read"),
 	STUDENT_WRITE("student:write"),
@@ -8,7 +11,4 @@ public enum AppUserPermission {
 
 	private final String permission;
 
-	AppUserPermission(String permission){
-		this.permission = permission;
-	}
 }

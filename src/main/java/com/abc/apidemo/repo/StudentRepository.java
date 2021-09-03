@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface ApiRepository extends CrudRepository<Student, Long> {
+public interface StudentRepository extends CrudRepository<Student, Long> {
 
 	Optional<Student> findByFirstNameAndLastName(String firstName, String lastName);
 }
