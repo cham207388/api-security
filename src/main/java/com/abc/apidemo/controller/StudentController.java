@@ -4,10 +4,10 @@ import com.abc.apidemo.entity.Student;
 import com.abc.apidemo.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/v1/students")
@@ -25,12 +25,5 @@ public class StudentController {
 	public Student findByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
 		return studentRepository.findByFirstNameAndLastName(firstName, lastName)
 				.orElseThrow(() -> new IllegalArgumentException("Student does not exist!"));
-	}
-
-	@GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Student> findAllStudents() {
-		List<Student> students = new ArrayList<>();
-		studentRepository.findAll().forEach(students::add);
-		return students;
 	}
 }
