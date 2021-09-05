@@ -16,7 +16,6 @@ import java.util.Optional;
 @RequestMapping("/management/api/v1/students")
 public class StudentManagementController {
 
-
 	private final StudentRepository studentRepository;
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
