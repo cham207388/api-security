@@ -18,7 +18,8 @@ public class StudentController {
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Student findById(@PathVariable Long id) {
-		return studentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
+		return studentRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
 	}
 
 	@GetMapping(path = "/{firstName}/{lastName}", produces = MediaType.APPLICATION_JSON_VALUE)

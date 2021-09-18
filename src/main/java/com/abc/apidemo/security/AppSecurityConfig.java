@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.abc.apidemo.security.AppUserRole.*;
 
 @Configuration
@@ -36,12 +38,22 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers("/actuator/*", "/index.html", "/").permitAll()
 				.antMatchers("/api/v1/**").hasRole(STUDENT.name())
-				.anyRequest()
-				.authenticated()
+				.anyRequest().authenticated()
 				.and()
 				.formLogin()
-				//.loginPage("/login").permitAll()
-				//.defaultSuccessUrl("/courses", true)
+					.loginPage("/login").permitAll()
+					.defaultSuccessUrl("/courses", true)
+				.and()
+				.rememberMe()
+					.tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(21))
+					.key("somethingverysecured")
+				.and()
+				.logout()
+					.logoutUrl("/logout")
+					.clearAuthentication(true)
+					.invalidateHttpSession(true)
+					.deleteCookies("JSESSIONID", "remember-me")
+					.logoutSuccessUrl("/login")
 		;
 	}
 
