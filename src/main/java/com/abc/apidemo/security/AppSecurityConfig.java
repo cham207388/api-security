@@ -1,17 +1,16 @@
 package com.abc.apidemo.security;
 
+import com.abc.apidemo.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +23,7 @@ import static com.abc.apidemo.security.AppUserRole.*;
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final PasswordEncoder passwordEncoder;
+	private final StudentAppUserService studentAppUserService;
 
 	/**
 	 * configure authentication type -basic
@@ -36,7 +36,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 				.csrf().disable()
 				.authorizeRequests()
-				.antMatchers("/actuator/*", "/index.html", "/").permitAll()
+				.antMatchers("/actuator/*", "/index.html", "/", "/ping").permitAll()
 				.antMatchers("/api/v1/**").hasRole(STUDENT.name())
 				.anyRequest().authenticated()
 				.and()
@@ -58,27 +58,15 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
-	@Bean
-	protected UserDetailsService userDetailsService() {
-		UserDetails student = User.builder()
-				.username("student")
-				.password(passwordEncoder.encode("password"))
-				//.roles(STUDENT.name())
-				.authorities(STUDENT.grantedAuthorities())
-				.build();
-		UserDetails admin = User.builder()
-				.username("admin")
-				.password(passwordEncoder.encode("password"))
-				//.roles(ADMIN.name())
-				.authorities(ADMIN.grantedAuthorities())
-				.build();
+	protected void configure(AuthenticationManagerBuilder auth) {
+		auth.authenticationProvider(daoAuthenticationProvider());
+	}
 
-		UserDetails trainee = User.builder()
-				.username("trainee")
-				.password(passwordEncoder.encode("password"))
-				//.roles(ADMIN_TRAINEE.name())
-				.authorities(ADMIN_TRAINEE.grantedAuthorities())
-				.build();
-		return new InMemoryUserDetailsManager(student, admin, trainee);
+	@Bean
+	public DaoAuthenticationProvider daoAuthenticationProvider() {
+		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setPasswordEncoder(passwordEncoder);
+		provider.setUserDetailsService(studentAppUserService);
+		return provider;
 	}
 }
