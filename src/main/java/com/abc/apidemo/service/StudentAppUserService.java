@@ -4,7 +4,6 @@ import com.abc.apidemo.entity.StudentAppUser;
 import com.abc.apidemo.repo.StudentAppUserRepository;
 import com.abc.apidemo.rest.StudentAppUserResponse;
 import com.abc.apidemo.security.AppUserRole;
-import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +28,16 @@ public class StudentAppUserService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		return studentAppUserRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+	}
+
+	public StudentAppUserResponse findByUsername(String username) throws UsernameNotFoundException {
+		return studentAppUserRepository.findByUsername(username)
+				.map(studentAppUser -> {
+					StudentAppUserResponse response = new StudentAppUserResponse();
+					BeanUtils.copyProperties(studentAppUser, response);
+					return response;
+				})
 				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
 	}
 
@@ -65,11 +74,8 @@ public class StudentAppUserService implements UserDetailsService {
 		return appUser.getUsername();
 	}
 
-	public List<StudentAppUserResponse> findAllStudents() {
-		for (StudentAppUser studentAppUser : studentAppUserRepository.findAll()) {
-			BeanUtils.copyProperties(studentAppUser, StudentAppUserResponse.class);
-		}
-		return studentAppUserRepository.findAll()
+	public List<StudentAppUserResponse> findAllStudents(AppUserRole role) {
+		return studentAppUserRepository.findAllByRole(role)
 				.stream()
 				.map(studentAppUser -> {
 					StudentAppUserResponse response = new StudentAppUserResponse();
@@ -77,7 +83,6 @@ public class StudentAppUserService implements UserDetailsService {
 					return response;
 				})
 				.collect(Collectors.toList());
-
 	}
 
 	public void deleteStudent(String id) {
