@@ -2,9 +2,9 @@ package com.abc.apidemo.rest.controller;
 
 import com.abc.apidemo.entity.StudentAppUser;
 import com.abc.apidemo.rest.StudentAppUserResponse;
+import com.abc.apidemo.security.AppUserRole;
 import com.abc.apidemo.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,41 +19,35 @@ public class StudentManagementController {
 	private final StudentAppUserService studentAppUserService;
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<StudentAppUserResponse> findAllStudents() {
-		return studentAppUserService.findAllStudents();
+	@GetMapping(path = "/role/{role}",produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<StudentAppUserResponse> findAllStudents(@PathVariable String role) {
+		return studentAppUserService.findAllStudents(AppUserRole.valueOf(role));
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
-	@GetMapping(path = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public StudentAppUserResponse findByUsername(@PathVariable String username) {
-
-		StudentAppUserResponse response = new StudentAppUserResponse();
-		BeanUtils.copyProperties(studentAppUserService.loadUserByUsername(username), response);
-		return response;
+		return studentAppUserService.findByUsername(username);
 	}
 
 	@PreAuthorize("hasAnyAuthority('student:write')")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String registerStudent(@RequestBody StudentAppUser student) {
-		return studentAppUserService.registerAppUser(student);
+	public String registerStudent(@RequestBody StudentAppUser studentAppUser) {
+		return studentAppUserService.registerAppUser(studentAppUser);
 	}
 
 	@PreAuthorize("hasAnyAuthority('student:write')")
-	@PutMapping("/{username}/{department}")
-	public void updateStudent(@PathVariable String username, @PathVariable String department) {
-
-		//studentAppUserService.updateStudent();
+	@PutMapping("/username/{username}/password/{password}")
+	public void updateStudent(@PathVariable String username, @PathVariable String password) {
+		// find student by username, make sure student is logged-in user
+		// update password
+		// save student with new details
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/id/{id}")
 	@PreAuthorize("hasAnyAuthority('student:write')")
 	public void deleteStudent(@PathVariable String id) {
 		studentAppUserService.deleteStudent(id);
 	}
 
-	@PostMapping
-	public String registerAppUser(@RequestBody StudentAppUser studentAppUser) {
-		return studentAppUserService.registerAppUser(studentAppUser);
-	}
 }
