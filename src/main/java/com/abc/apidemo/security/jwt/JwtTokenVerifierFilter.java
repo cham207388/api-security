@@ -24,21 +24,33 @@ import java.util.stream.Collectors;
 
 import static com.abc.apidemo.util.Utility.*;
 
+/**
+ * This is an authorization filter. It verifies the authenticated client and determines if this
+ * client is authorized to view the requested resource
+ */
 public class JwtTokenVerifierFilter extends OncePerRequestFilter {
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 	                                HttpServletResponse response,
 	                                FilterChain filterChain) throws ServletException, IOException {
+
+		// get Authorization header value from request
 		String authorizationHeader = request.getHeader("Authorization");
+
+		// if it's not in expected format, reject
 		if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith("Bearer")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
+
+		// get token by removing "Bearer " prefix from it
 		String token = authorizationHeader.replace(BEARER, EMPTY_STRING);
 		try {
 			Jws<Claims> claimsJws = Jwts.parserBuilder()
-							.setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
-									.build().parseClaimsJws(token);
+					.setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
+					.build().parseClaimsJws(token);
+
 			Claims body = claimsJws.getBody();
 			String username = body.getSubject();
 			var authorities = (List<Map<String, String>>) body.get("authorities");
@@ -58,6 +70,7 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
 		} catch (JwtException e) {
 			throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
 		}
+		// pass request and response to next filter in the chain or back to client if required
 		filterChain.doFilter(request, response);
 	}
 }
