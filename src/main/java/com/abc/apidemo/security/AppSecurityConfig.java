@@ -25,7 +25,6 @@ import static com.abc.apidemo.security.AppUserRole.*;
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtConfig jwtConfig;
-
 	private final PasswordEncoder passwordEncoder;
 	private final StudentAppUserService studentAppUserService;
 
