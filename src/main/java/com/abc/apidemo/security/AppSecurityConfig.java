@@ -1,5 +1,6 @@
 package com.abc.apidemo.security;
 
+import com.abc.apidemo.config.JwtConfig;
 import com.abc.apidemo.security.jwt.JwtTokenVerifierFilter;
 import com.abc.apidemo.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.abc.apidemo.service.StudentAppUserService;
@@ -23,6 +24,8 @@ import static com.abc.apidemo.security.AppUserRole.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	private final JwtConfig jwtConfig;
+
 	private final PasswordEncoder passwordEncoder;
 	private final StudentAppUserService studentAppUserService;
 
@@ -38,8 +41,8 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrf().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
-				.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
-				.addFilterAfter(new JwtTokenVerifierFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
+				.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig))
+				.addFilterAfter(new JwtTokenVerifierFilter(jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
 				.authorizeRequests()
 				.antMatchers("/actuator/*", "/index.html", "/", "/ping").permitAll()
 				.antMatchers("/api/v1/**").hasRole(STUDENT.name())

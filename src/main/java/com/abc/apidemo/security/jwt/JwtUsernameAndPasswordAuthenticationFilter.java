@@ -1,6 +1,6 @@
 package com.abc.apidemo.security.jwt;
 
-import com.abc.apidemo.util.Utility;
+import com.abc.apidemo.config.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,15 +18,16 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import static com.abc.apidemo.util.Utility.*;
 
 /**
- * This filter validates and sends jwt token to client to use for subsequent requests
+ * This is an authentication filter. An authenticated user will receive a jwt token that can be used
+ * on a subsequent request
  */
 @RequiredArgsConstructor
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
+	private final JwtConfig jwtConfig;
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -47,6 +48,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		}
 	}
 
+	/**
+	 * Add the token to the response header upon successful authentication
+	 *
+	 * @param request    the request
+	 * @param response   the response
+	 * @param chain      the filterchain
+	 * @param authResult authentication
+	 */
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request,
 	                                        HttpServletResponse response,
@@ -58,10 +67,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 				.setSubject(authResult.getName())
 				.claim("authorities", authResult.getAuthorities())
 				.setIssuedAt(new java.util.Date())
-				.setExpiration(Date.valueOf(LocalDate.now().plusWeeks(2)))
-				.signWith(Keys.hmacShaKeyFor(KEY.getBytes()))
+				.setExpiration(Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+				.signWith(Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes()))
 				.compact();
 
-		response.addHeader(AUTHORIZATION, BEARER + token);
+		response.addHeader(jwtConfig.getAuthorization(), jwtConfig.getTokenPrefix() + token);
 	}
 }

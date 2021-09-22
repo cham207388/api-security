@@ -1,11 +1,13 @@
 package com.abc.apidemo.security.jwt;
 
+import com.abc.apidemo.config.JwtConfig;
 import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +30,10 @@ import static com.abc.apidemo.util.Utility.*;
  * This is an authorization filter. It verifies the authenticated client and determines if this
  * client is authorized to view the requested resource
  */
+@RequiredArgsConstructor
 public class JwtTokenVerifierFilter extends OncePerRequestFilter {
+
+	private final JwtConfig jwtConfig;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -36,19 +41,19 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
 	                                FilterChain filterChain) throws ServletException, IOException {
 
 		// get Authorization header value from request
-		String authorizationHeader = request.getHeader("Authorization");
+		String authorizationHeader = request.getHeader(jwtConfig.getAuthorization());
 
 		// if it's not in expected format, reject
-		if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith("Bearer")) {
+		if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		// get token by removing "Bearer " prefix from it
-		String token = authorizationHeader.replace(BEARER, EMPTY_STRING);
+		String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), jwtConfig.getEmpty());
 		try {
 			Jws<Claims> claimsJws = Jwts.parserBuilder()
-					.setSigningKey(Keys.hmacShaKeyFor(KEY.getBytes()))
+					.setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes()))
 					.build().parseClaimsJws(token);
 
 			Claims body = claimsJws.getBody();
@@ -57,7 +62,7 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
 
 			Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities
 					.stream()
-					.map(m -> new SimpleGrantedAuthority(m.get("authority")))
+					.map(m -> new SimpleGrantedAuthority(m.get(jwtConfig.getAuthority())))
 					.collect(Collectors.toSet());
 
 			Authentication authentication = new UsernamePasswordAuthenticationToken(

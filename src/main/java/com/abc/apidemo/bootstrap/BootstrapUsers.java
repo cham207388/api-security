@@ -26,9 +26,9 @@ public class BootstrapUsers implements CommandLineRunner {
 
 	private void initializeDBWithAppUsers() {
 
-		studentAppUserRepository.save(new StudentAppUser("admin", passwordEncoder.encode("password"), "Alhagie Bai Cham", ADMIN, ADMIN.grantedAuthorities(), true, true, true, true));
-		studentAppUserRepository.save(new StudentAppUser("admin_trainee", passwordEncoder.encode("password"), "Alhagie Bai Cham", ADMIN_TRAINEE, ADMIN_TRAINEE.grantedAuthorities(), true, true, true, true));
-		studentAppUserRepository.save(new StudentAppUser("student", passwordEncoder.encode("password"), "Alhagie Bai Cham", STUDENT, STUDENT.grantedAuthorities(), true, true, true, true));
+		studentAppUserRepository.save(new StudentAppUser("abcham", passwordEncoder.encode("password"), "Alhagie Bai Cham", ADMIN, ADMIN.grantedAuthorities(), true, true, true, true));
+		studentAppUserRepository.save(new StudentAppUser("hcham", passwordEncoder.encode("password"), "Horeja Cham", ADMIN_TRAINEE, ADMIN_TRAINEE.grantedAuthorities(), true, true, true, true));
+		studentAppUserRepository.save(new StudentAppUser("asimaha", passwordEncoder.encode("password"), "Abubacarr Simaha", STUDENT, STUDENT.grantedAuthorities(), true, true, true, true));
 
 	}
 }
