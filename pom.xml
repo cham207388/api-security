@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.abc</groupId>
-    <artifactId>api-security</artifactId>
+    <artifactId>api-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>api-security</name>
+    <name>api-demo</name>
     <description>Implement and enahance spring security skills</description>
     <properties>
         <java.version>11</java.version>
