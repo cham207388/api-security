@@ -21,11 +21,11 @@ public class BootstrapUsers implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		//initializeDBWithAppUsers();
+		initializeDBWithAppUsers();
 	}
 
 	private void initializeDBWithAppUsers() {
-
+		studentAppUserRepository.deleteAll();
 		studentAppUserRepository.save(new StudentAppUser("abcham", passwordEncoder.encode("password"), "Alhagie Bai Cham", ADMIN, ADMIN.grantedAuthorities(), true, true, true, true));
 		studentAppUserRepository.save(new StudentAppUser("hcham", passwordEncoder.encode("password"), "Horeja Cham", ADMIN_TRAINEE, ADMIN_TRAINEE.grantedAuthorities(), true, true, true, true));
 		studentAppUserRepository.save(new StudentAppUser("asimaha", passwordEncoder.encode("password"), "Abubacarr Simaha", STUDENT, STUDENT.grantedAuthorities(), true, true, true, true));
