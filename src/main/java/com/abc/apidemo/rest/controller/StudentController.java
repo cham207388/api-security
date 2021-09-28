@@ -1,6 +1,6 @@
 package com.abc.apidemo.rest.controller;
 
-import com.abc.apidemo.rest.StudentAppUserResponse;
+import com.abc.apidemo.rest.response.StudentAppUserResponse;
 import com.abc.apidemo.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;

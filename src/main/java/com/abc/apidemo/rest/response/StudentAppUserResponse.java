@@ -1,4 +1,4 @@
-package com.abc.apidemo.rest;
+package com.abc.apidemo.rest.response;
 
 import com.abc.apidemo.security.AppUserRole;
 import lombok.Getter;

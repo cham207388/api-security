@@ -2,7 +2,7 @@ package com.abc.apidemo.service;
 
 import com.abc.apidemo.entity.StudentAppUser;
 import com.abc.apidemo.repo.StudentAppUserRepository;
-import com.abc.apidemo.rest.StudentAppUserResponse;
+import com.abc.apidemo.rest.response.StudentAppUserResponse;
 import com.abc.apidemo.security.AppUserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +24,7 @@ public class StudentAppUserService implements UserDetailsService {
 
 	private final StudentAppUserRepository studentAppUserRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final MailService mailService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -71,6 +72,9 @@ public class StudentAppUserService implements UserDetailsService {
 		studentAppUser.setEnabled(true);
 		studentAppUser.setCredentialsNonExpired(true);
 		StudentAppUser appUser = studentAppUserRepository.save(studentAppUser);
+		if (appUser.getRole().name().equals("STUDENT")){
+			mailService.sendEmail(appUser);
+		}
 		return appUser.getUsername();
 	}
 

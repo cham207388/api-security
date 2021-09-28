@@ -1,7 +1,7 @@
 package com.abc.apidemo.rest.controller;
 
 import com.abc.apidemo.entity.StudentAppUser;
-import com.abc.apidemo.rest.StudentAppUserResponse;
+import com.abc.apidemo.rest.response.StudentAppUserResponse;
 import com.abc.apidemo.security.AppUserRole;
 import com.abc.apidemo.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;

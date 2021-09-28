@@ -21,6 +21,7 @@ public class StudentAppUser implements UserDetails {
 	@Indexed(unique = true)
 	private String username;
 	private String password;
+	private String email;
 	private String name;
 	private AppUserRole role;
 	private Set<? extends GrantedAuthority> authorities;
