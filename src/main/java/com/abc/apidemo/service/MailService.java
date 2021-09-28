@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class MailService {
 	private final JavaMailSender javaMailSender;
 	private final MailConfig mailConfig;
-	private final PasswordEncoder passwordEncoder;
 
 	public void sendEmail(StudentAppUser appUser) {
 		try {
@@ -29,6 +28,7 @@ public class MailService {
 			mailMessage.setSubject("Password reset!");
 
 			javaMailSender.send(mailMessage);
+			log.info("Email is sent to user: {}", appUser.getUsername());
 		} catch (Exception exception) {
 			log.info(exception.getMessage());
 		}

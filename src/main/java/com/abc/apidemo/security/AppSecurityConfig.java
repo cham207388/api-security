@@ -43,7 +43,7 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig))
 				.addFilterAfter(new JwtTokenVerifierFilter(jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers("/actuator/*", "/index.html", "/", "/ping").permitAll()
+				.antMatchers("/actuator/*", "/index.html", "/", "/ping","/login").permitAll()
 				.antMatchers("/api/v1/**").hasRole(STUDENT.name())
 				.anyRequest().authenticated()
 				.and()

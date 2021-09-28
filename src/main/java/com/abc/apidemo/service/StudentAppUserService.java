@@ -21,7 +21,6 @@ import static com.abc.apidemo.security.AppUserRole.*;
 @RequiredArgsConstructor
 public class StudentAppUserService implements UserDetailsService {
 
-
 	private final StudentAppUserRepository studentAppUserRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final MailService mailService;
