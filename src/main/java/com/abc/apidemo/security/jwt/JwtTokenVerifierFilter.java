@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.abc.apidemo.util.Utility.*;
-
 /**
  * This is an authorization filter. It verifies the authenticated client and determines if this
  * client is authorized to view the requested resource

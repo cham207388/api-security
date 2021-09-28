@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,14 +15,16 @@ import org.springframework.stereotype.Service;
 public class MailService {
 	private final JavaMailSender javaMailSender;
 	private final MailConfig mailConfig;
+	private final PasswordEncoder passwordEncoder;
 
 	public void sendEmail(StudentAppUser appUser) {
 		try {
 			SimpleMailMessage mailMessage = new SimpleMailMessage();
 			mailMessage.setFrom(mailConfig.getFrom());
 			mailMessage.setTo(appUser.getEmail());
-			mailMessage.setText("Please login to Student Portal and change your password!\n" +
-					"at <a href=\"http://localhost:8080/api/v1/students/"
+			mailMessage.setText("Please login to Student Portal with this password: password"
+					+ "and reset immediately!\n"
+					+ "at <a href=\"http://localhost:8080/api/v1/students/"
 					+ appUser.getUsername() + "\">reset password</a>");
 			mailMessage.setSubject("Password reset!");
 
