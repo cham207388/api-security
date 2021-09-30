@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.abc.apidemo.security.AppUserRole.*;
@@ -21,9 +22,9 @@ import static com.abc.apidemo.security.AppUserRole.*;
 @RequiredArgsConstructor
 public class StudentAppUserService implements UserDetailsService {
 
-
 	private final StudentAppUserRepository studentAppUserRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final EmailService emailService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -71,6 +72,9 @@ public class StudentAppUserService implements UserDetailsService {
 		studentAppUser.setEnabled(true);
 		studentAppUser.setCredentialsNonExpired(true);
 		StudentAppUser appUser = studentAppUserRepository.save(studentAppUser);
+		if (appUser.getRole().name().equals("STUDENT")) {
+			emailService.sendEmail(appUser);
+		}
 		return appUser.getUsername();
 	}
 
@@ -87,5 +91,13 @@ public class StudentAppUserService implements UserDetailsService {
 
 	public void deleteStudent(String id) {
 		studentAppUserRepository.deleteById(id);
+	}
+
+	public String updatePassword(String username, String password) {
+		StudentAppUser appUser = studentAppUserRepository.findByUsername(username)
+				.orElseThrow();
+		appUser.setPassword(passwordEncoder.encode(password));
+		StudentAppUser studentAppUser = studentAppUserRepository.save(appUser);
+		return studentAppUser.getUsername() + ": you've reset your password!";
 	}
 }

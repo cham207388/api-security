@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1/students")
@@ -28,5 +25,11 @@ public class StudentController {
 	@GetMapping(path = "/username", produces = MediaType.APPLICATION_JSON_VALUE)
 	public StudentAppUserResponse findByUsername(@Param("username") String username) {
 		return studentAppUserService.findByUsername(username);
+	}
+
+	@PreAuthorize("#username == authentication.principal")
+	@PutMapping(path = "/username/{username}/password/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String updatePassword(@PathVariable String username, @PathVariable String password) {
+		return studentAppUserService.updatePassword(username, password);
 	}
 }

@@ -21,6 +21,7 @@ public class StudentAppUser implements UserDetails {
 	@Indexed(unique = true)
 	private String username;
 	private String password;
+	private String email;
 	private String name;
 	private AppUserRole role;
 	private Set<? extends GrantedAuthority> authorities;
@@ -29,9 +30,10 @@ public class StudentAppUser implements UserDetails {
 	private boolean isCredentialsNonExpired;
 	private boolean isEnabled;
 
-	public StudentAppUser(String username, String password, String name, AppUserRole role, Set<? extends GrantedAuthority> authorities, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
+	public StudentAppUser(String username, String password, String email, String name, AppUserRole role, Set<? extends GrantedAuthority> authorities, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled) {
 		this.username = username;
 		this.password = password;
+		this.email = email;
 		this.name = name;
 		this.role = role;
 		this.authorities = authorities;
