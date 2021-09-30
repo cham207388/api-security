@@ -1,4 +1,4 @@
-package com.abc.api.security.repo;
+package com.abc.api.security.repository;
 
 import com.abc.api.security.entity.StudentAppUser;
 import com.abc.api.security.security.AppUserRole;

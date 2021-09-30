@@ -1,7 +1,7 @@
 package com.abc.api.security.service;
 
 import com.abc.api.security.entity.StudentAppUser;
-import com.abc.api.security.repo.StudentAppUserRepository;
+import com.abc.api.security.repository.StudentAppUserRepository;
 import com.abc.api.security.rest.StudentAppUserResponse;
 import com.abc.api.security.security.AppUserRole;
 import lombok.RequiredArgsConstructor;
