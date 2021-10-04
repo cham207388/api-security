@@ -1,13 +1,13 @@
-package com.abc.apidemo;
+package com.abc.api.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiDemoApplication{
+public class ApiSecurityApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ApiDemoApplication.class, args);
+		SpringApplication.run(ApiSecurityApplication.class, args);
 	}
 
 }
