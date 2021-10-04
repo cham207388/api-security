@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ####### bootstrap #####
-**/BootstrapUsers.java
+/src/main/java/com/abc/api/security/boostrap/BootstrapUsers.java
