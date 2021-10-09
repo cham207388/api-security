@@ -1,7 +1,7 @@
 # api-security
 This is a Student Portal API
 
-## There are 3 roles:
+## There are 3 roles
 1. ADMIN
    * Can view student information
    * Can register student
