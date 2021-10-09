@@ -23,3 +23,4 @@ This is a Student Portal API
   * /health for health information
   * /info for information about
   * /chaosmonkey for actuator
+* Mail using spring boot mail
