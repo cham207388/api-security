@@ -1,8 +1,10 @@
 package com.abc.api.security.rest.controller;
 
-import com.abc.api.security.rest.StudentAppUserResponse;
+import com.abc.api.security.rest.response.StudentAppUserResponse;
 import com.abc.api.security.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,15 +23,17 @@ public class StudentController {
 		return studentAppUserService.findById(id);
 	}
 
+	@Cacheable(value = "studentAppUser", key = "#username")
 	@PreAuthorize("#username == authentication.principal")
-	@GetMapping(path = "/username", produces = MediaType.APPLICATION_JSON_VALUE)
-	public StudentAppUserResponse findByUsername(@Param("username") String username) {
+	@GetMapping(path = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public StudentAppUserResponse findByUsername(@PathVariable String username) {
 		return studentAppUserService.findByUsername(username);
 	}
 
+	@CachePut(value = "studentAppUser", key = "#username")
 	@PreAuthorize("#username == authentication.principal")
 	@PutMapping(path = "/username/{username}/password/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String updatePassword(@PathVariable String username, @PathVariable String password) {
+	public StudentAppUserResponse updateStudentAppUserPasswordByUsername(@PathVariable String username, @PathVariable String password) {
 		return studentAppUserService.updatePassword(username, password);
 	}
 }

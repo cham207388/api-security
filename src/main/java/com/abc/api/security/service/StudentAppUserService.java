@@ -2,9 +2,10 @@ package com.abc.api.security.service;
 
 import com.abc.api.security.entity.StudentAppUser;
 import com.abc.api.security.repository.StudentAppUserRepository;
-import com.abc.api.security.rest.StudentAppUserResponse;
+import com.abc.api.security.rest.response.StudentAppUserResponse;
 import com.abc.api.security.security.AppUserRole;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,10 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.abc.api.security.security.AppUserRole.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StudentAppUserService implements UserDetailsService {
@@ -32,22 +35,15 @@ public class StudentAppUserService implements UserDetailsService {
 	}
 
 	public StudentAppUserResponse findByUsername(String username) throws UsernameNotFoundException {
+		log.info("   ==== Not from cache ====");
 		return studentAppUserRepository.findByUsername(username)
-				.map(studentAppUser -> {
-					StudentAppUserResponse response = new StudentAppUserResponse();
-					BeanUtils.copyProperties(studentAppUser, response);
-					return response;
-				})
+				.map(getStudentAppUserResponseFunction())
 				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
 	}
 
 	public StudentAppUserResponse findById(String id) {
 		return studentAppUserRepository.findById(id)
-				.map(studentAppUser -> {
-					StudentAppUserResponse response = new StudentAppUserResponse();
-					BeanUtils.copyProperties(studentAppUser, response);
-					return response;
-				}).orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
+				.map(getStudentAppUserResponseFunction()).orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
 	}
 
 	public String registerAppUser(StudentAppUser studentAppUser) {
@@ -78,25 +74,30 @@ public class StudentAppUserService implements UserDetailsService {
 	}
 
 	public List<StudentAppUserResponse> findAllStudents(AppUserRole role) {
+		log.info("   === not from cache === ");
 		return studentAppUserRepository.findAllByRole(role)
 				.stream()
-				.map(studentAppUser -> {
-					StudentAppUserResponse response = new StudentAppUserResponse();
-					BeanUtils.copyProperties(studentAppUser, response);
-					return response;
-				})
+				.map(getStudentAppUserResponseFunction())
 				.collect(Collectors.toList());
 	}
 
-	public void deleteStudent(String id) {
-		studentAppUserRepository.deleteById(id);
+	public void deleteStudentByUsername(String username) {
+		studentAppUserRepository.deleteByUsername(username);
 	}
 
-	public String updatePassword(String username, String password) {
+	public StudentAppUserResponse updatePassword(String username, String password) {
 		StudentAppUser appUser = studentAppUserRepository.findByUsername(username)
 				.orElseThrow();
 		appUser.setPassword(passwordEncoder.encode(password));
 		StudentAppUser studentAppUser = studentAppUserRepository.save(appUser);
-		return studentAppUser.getUsername() + ": you've reset your password!";
+		return getStudentAppUserResponseFunction().apply(studentAppUser);
+	}
+
+	private Function<StudentAppUser, StudentAppUserResponse> getStudentAppUserResponseFunction() {
+		return studentAppUser -> {
+			StudentAppUserResponse response = new StudentAppUserResponse();
+			BeanUtils.copyProperties(studentAppUser, response);
+			return response;
+		};
 	}
 }
