@@ -15,12 +15,20 @@ This is a Student Portal API
   * method base authorization (@PreAuthorize annotation)
     * only loggedin student and admin have access to a student's information
   * roles
-* Caching using reedis
-  * cache student data using @Cacheable
-  * update student when updated using @CachePut
-  * delete value from cache when deleted from database using @CacheEvict
+* Caching using redis
+    * cache student data using @Cacheable
+    * update student when updated using @CachePut
+    * delete value from cache when deleted from database using @CacheEvict
+    * *Configuration*
+      * install redis on your local if you want to use locally
+      * ***brew install redis***
+      * run ***redis-cli*** to open shell
+      * then ***MONITOR*** to see what's going on
 * Monitoring using spring boot actuator
   * /health for health information
   * /info for information about
   * /chaosmonkey for actuator
 * Mail using spring boot mail
+  * *confiration*
+    * [Link to smtp Configuration](https://www.jotform.com/help/392-how-to-use-your-gmail-account-as-your-email-sender-via-smtp/)
+    * [Allow less secure apps](https://www.google.com/settings/security/lesssecureapps)
