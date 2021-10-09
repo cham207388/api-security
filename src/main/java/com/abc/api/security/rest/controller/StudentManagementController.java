@@ -1,10 +1,12 @@
 package com.abc.api.security.rest.controller;
 
 import com.abc.api.security.entity.StudentAppUser;
-import com.abc.api.security.rest.StudentAppUserResponse;
+import com.abc.api.security.rest.response.StudentAppUserResponse;
 import com.abc.api.security.security.AppUserRole;
 import com.abc.api.security.service.StudentAppUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +20,14 @@ public class StudentManagementController {
 
 	private final StudentAppUserService studentAppUserService;
 
+	@Cacheable(value = "studentAppUsers")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
 	@GetMapping(path = "/role/{role}",produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<StudentAppUserResponse> findAllStudents(@PathVariable String role) {
 		return studentAppUserService.findAllStudents(AppUserRole.valueOf(role));
 	}
 
+	@Cacheable(cacheNames = "studentAppUser", key = "#username")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
 	@GetMapping(path = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public StudentAppUserResponse findByUsername(@PathVariable String username) {
@@ -44,10 +48,11 @@ public class StudentManagementController {
 		// save student with new details
 	}
 
-	@DeleteMapping("/id/{id}")
+	@CacheEvict(value = "studentAppUsers", allEntries = true)
+	@DeleteMapping("/username/{username}")
 	@PreAuthorize("hasAnyAuthority('student:write')")
-	public void deleteStudent(@PathVariable String id) {
-		studentAppUserService.deleteStudent(id);
+	public void deleteStudent(@PathVariable String username) {
+		studentAppUserService.deleteStudentByUsername(username);
 	}
 
 }

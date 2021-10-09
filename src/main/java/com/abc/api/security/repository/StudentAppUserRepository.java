@@ -12,4 +12,6 @@ public interface StudentAppUserRepository extends MongoRepository<StudentAppUser
 	Optional<StudentAppUser> findByUsername(String username);
 
 	List<StudentAppUser> findAllByRole(AppUserRole role);
+
+	void deleteByUsername(String username);
 }
