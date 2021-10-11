@@ -35,3 +35,5 @@ This is a Student Portal API
   * Confiration
   * [Link to smtp Configuration](https://www.jotform.com/help/392-how-to-use-your-gmail-account-as-your-email-sender-via-smtp/)
   * [Allow less secure apps](https://www.google.com/settings/security/lesssecureapps)
+    * ***I switch to AWS SES***
+    * [AWS SES Configuration](https://mmafrar.medium.com/sending-emails-in-spring-boot-with-amazon-ses-smtp-interface-185fc7ca3725)
