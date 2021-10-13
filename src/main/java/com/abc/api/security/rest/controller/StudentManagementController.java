@@ -42,10 +42,8 @@ public class StudentManagementController {
 
 	@PreAuthorize("hasAnyAuthority('student:write')")
 	@PutMapping("/username/{username}/password/{password}")
-	public void updateStudent(@PathVariable String username, @PathVariable String password) {
-		// find student by username, make sure student is logged-in user
-		// update password
-		// save student with new details
+	public StudentAppUserResponse updateStudent(@PathVariable String username, @PathVariable String password) {
+		return studentAppUserService.updatePassword(username, password);
 	}
 
 	@CacheEvict(value = "studentAppUsers", allEntries = true)

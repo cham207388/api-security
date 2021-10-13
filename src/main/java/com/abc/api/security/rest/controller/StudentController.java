@@ -17,7 +17,7 @@ public class StudentController {
 
 	private final StudentAppUserService studentAppUserService;
 
-	@PreAuthorize("hasAnyRole('ROLE_STUDENT')")
+	@PreAuthorize("#id == authentication.principal")
 	@GetMapping(path = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public StudentAppUserResponse findById(@PathVariable String id) {
 		return studentAppUserService.findById(id);
