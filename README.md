@@ -11,13 +11,13 @@ This is a Student Portal API
 3. STUDENT
    * Can view his/her information
    * Can update some information
-### Features
-#### Security using spring boot security
+## Features
+### Security using spring boot security
 * using JWT authentication
 * method base authorization (@PreAuthorize annotation)
 * only loggedin student and admin have access to a student's information
 * roles
-#### Caching using redis
+### Caching using redis
 * cache student data using @Cacheable
 * update student when updated using @CachePut
 * delete value from cache when deleted from database using @CacheEvict
@@ -27,11 +27,11 @@ This is a Student Portal API
   * ***brew install redis***
   * run ***redis-cli*** to open shell
   * then ***MONITOR*** to see what's going on
-#### Monitoring using spring boot actuator
+### Monitoring using spring boot actuator
   * /health for health information
   * /info for information about
   * /chaosmonkey for actuator
-#### Mail using spring boot mail
+### Mail using spring boot mail
   * Confiration
   
     * **I switch to AWS SES**
