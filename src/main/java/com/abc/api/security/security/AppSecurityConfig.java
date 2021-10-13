@@ -1,5 +1,6 @@
 package com.abc.api.security.security;
 
+import com.abc.api.security.config.AuthProviderConfig;
 import com.abc.api.security.config.JwtConfig;
 import com.abc.api.security.security.jwt.JwtTokenVerifierFilter;
 import com.abc.api.security.security.jwt.JwtUsernameAndPasswordAuthenticationFilter;
@@ -18,6 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.abc.api.security.security.AppUserRole.*;
 
+/**
+ * This class sets up the security of our application.
+ * specifying the endpoints that are allowed by default, those that are allowed with predefined roles
+ * and those that require authentication and authorization
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,8 +31,7 @@ import static com.abc.api.security.security.AppUserRole.*;
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtConfig jwtConfig;
-	private final PasswordEncoder passwordEncoder;
-	private final StudentAppUserService studentAppUserService;
+	private final AuthProviderConfig authProviderConfig;
 
 	/**
 	 * configure authentication type -basic
@@ -50,16 +55,12 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 		;
 	}
 
+	/**
+	 * Configure database authentication provider
+	 * @param auth Authentication Manager Builder
+	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) {
-		auth.authenticationProvider(daoAuthenticationProvider());
-	}
-
-	@Bean
-	public DaoAuthenticationProvider daoAuthenticationProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(passwordEncoder);
-		provider.setUserDetailsService(studentAppUserService);
-		return provider;
+		auth.authenticationProvider(authProviderConfig.daoAuthenticationProvider());
 	}
 }
