@@ -21,8 +21,8 @@ import java.time.LocalDate;
 
 
 /**
- * This is an authentication filter. An authenticated user will receive a jwt token that can be used
- * on a subsequent request
+ * This is an authentication filter. An authenticated user will receive a jwt token in the header
+ * Authorization = Bearer jwtToken
  */
 @RequiredArgsConstructor
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -30,6 +30,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 	private final AuthenticationManager authenticationManager;
 	private final JwtConfig jwtConfig;
 
+	/**
+	 * This method gets user information. If user is in db, we are good.
+	 * @param request containing user information
+	 * @param response response value having an Authorizatioin header if authenticated
+	 * @return authentication with header
+	 * @throws AuthenticationException exception if not authenticated
+	 */
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
