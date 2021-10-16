@@ -21,10 +21,7 @@ public class EmailService {
 				SimpleMailMessage mailMessage = new SimpleMailMessage();
 				mailMessage.setFrom(mailConfig.getFrom());
 				mailMessage.setTo(appUser.getEmail());
-				mailMessage.setText("Please login to Student Portal with this password: password"
-						+ "and reset immediately!\n"
-						+ "at <a href=\"http://localhost:8080/api/v1/students/"
-						+ appUser.getUsername() + "\">reset password</a>");
+				mailMessage.setText(appUser.getName()+"Please login to Student Portal and reset your password immediately!\n");
 				mailMessage.setSubject("Password reset!");
 
 				mailSender.send(mailMessage);
