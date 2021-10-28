@@ -22,19 +22,19 @@ public class BootstrapUsers {
 	private final PasswordEncoder passwordEncoder;
 
 
-	/*@PostConstruct
+	@PostConstruct
 	public void initializeDBWithAppUsers() {
 		log.info("@PostConstruct => Intializing DB: count = {}", studentAppUserRepository.count());
 		studentAppUserRepository.save(new StudentAppUser("admin", passwordEncoder.encode("password"), "admin@email.net", "Adminis Trator", ADMIN, ADMIN.grantedAuthorities(), true, true, true, true));
 		studentAppUserRepository.save(new StudentAppUser("admintrainee", passwordEncoder.encode("password"), "admin@email.net", "Admin Assistant", ADMIN_TRAINEE, ADMIN_TRAINEE.grantedAuthorities(), true, true, true, true));
 		studentAppUserRepository.save(new StudentAppUser("student", passwordEncoder.encode("password"), "student@email.net", "Student Student", STUDENT, STUDENT.grantedAuthorities(), true, true, true, true));
 		log.info("@PostConstruct => Loaded DB: count = {}", studentAppUserRepository.count());
-	}*/
+	}
 
-	/*@PreDestroy
+	@PreDestroy
 	public void emptyDb(){
 		log.info("Emptying DB");
 		studentAppUserRepository.deleteAll();
 		log.info("@PreDestroy => Empty DB: count = {}", studentAppUserRepository.count());
-	}*/
+	}
 }
