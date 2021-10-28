@@ -17,6 +17,12 @@
         <java.version>11</java.version>
         <jwt-version>0.11.2</jwt-version>
     </properties>
+    <developers>
+        <developer>
+            <id>abc</id>
+            <name>Alhagie Bai Cham</name>
+        </developer>
+    </developers>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
