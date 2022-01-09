@@ -4,6 +4,7 @@ import com.abc.api.security.security.AppUserRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +18,7 @@ import java.util.Set;
 public class StudentAppUser implements UserDetails {
 
 	@Id
-	private String id;
+	private ObjectId id;
 	@Indexed(unique = true)
 	private String username;
 	private String password;
