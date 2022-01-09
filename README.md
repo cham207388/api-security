@@ -40,3 +40,9 @@ This is a Student Portal API
   * [Link to smtp Configuration](https://www.jotform.com/help/392-how-to-use-your-gmail-account-as-your-email-sender-via-smtp/)
   * [Allow less secure apps](https://www.google.com/settings/security/lesssecureapps)
   * [Amigoscode Spring Security](https://www.youtube.com/watch?v=her_7pa0vrg)
+
+#### Database
+I am using mongodb. At the beginning of this project, I used an installed version of \
+mongodb on my local machine. \
+On January 9th 2022, I learned to use mongodb container from docker. \
+ * [Link to use mongodb container](https://www.thepolyglotdeveloper.com/2019/01/getting-started-mongodb-docker-container-deployment/)
