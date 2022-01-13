@@ -1,56 +1,54 @@
 package com.abc.api.security.rest.controller;
 
 import com.abc.api.security.entity.StudentAppUser;
+import com.abc.api.security.exception.StudentException;
 import com.abc.api.security.rest.response.StudentAppUserResponse;
-import com.abc.api.security.security.AppUserRole;
-import com.abc.api.security.service.StudentAppUserService;
-import lombok.RequiredArgsConstructor;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-@RequiredArgsConstructor
-@RestController
-@RequestMapping("/management/api/v1/students")
-public class StudentManagementController {
+public interface StudentManagementController {
 
-	private final StudentAppUserService studentAppUserService;
+    @ApiOperation(value = "list all students")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpServletResponse.SC_ACCEPTED, message = "Success", response = List.class),
+            @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request", response = StudentException.class)
+    })
+    List<StudentAppUserResponse> findAllStudents(@PathVariable String role);
 
-	@Cacheable(value = "studentAppUsers")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
-	@GetMapping(path = "/role/{role}",produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<StudentAppUserResponse> findAllStudents(@PathVariable String role) {
-		return studentAppUserService.findAllStudents(AppUserRole.valueOf(role));
-	}
+    @ApiOperation(value = "find student by username")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpServletResponse.SC_ACCEPTED, message = "Success", response = StudentAppUserResponse.class),
+            @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request", response = StudentException.class)
+    })
+    StudentAppUserResponse findByUsername(@PathVariable String username);
 
-	@Cacheable(cacheNames = "studentAppUser", key = "#username")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMIN_TRAINEE')")
-	@GetMapping(path = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public StudentAppUserResponse findByUsername(@PathVariable String username) {
-		return studentAppUserService.findByUsername(username);
-	}
+    @ApiOperation(value = "register a student")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpServletResponse.SC_ACCEPTED, message = "Success", response = String.class),
+            @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request", response = StudentException.class)
+    })
+    String registerStudent(@RequestBody StudentAppUser studentAppUser);
 
-	@PreAuthorize("hasAnyAuthority('student:write')")
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public String registerStudent(@RequestBody StudentAppUser studentAppUser) {
-		return studentAppUserService.registerAppUser(studentAppUser);
-	}
+    @ApiOperation(value = "update a student")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpServletResponse.SC_ACCEPTED, message = "Success", response = StudentAppUserResponse.class),
+            @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request", response = StudentException.class)
+    })
+    StudentAppUserResponse updateStudent(@PathVariable String username, @PathVariable String password);
 
-	@PreAuthorize("hasAnyAuthority('student:write')")
-	@PutMapping("/username/{username}/password/{password}")
-	public StudentAppUserResponse updateStudent(@PathVariable String username, @PathVariable String password) {
-		return studentAppUserService.updatePassword(username, password);
-	}
-
-	@CacheEvict(value = "studentAppUsers", allEntries = true)
-	@DeleteMapping("/username/{username}")
-	@PreAuthorize("hasAnyAuthority('student:write')")
-	public void deleteStudent(@PathVariable String username) {
-		studentAppUserService.deleteStudentByUsername(username);
-	}
-
+    @ApiOperation(value = "delete a student")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpServletResponse.SC_ACCEPTED, message = "Success"),
+            @ApiResponse(code = HttpServletResponse.SC_BAD_REQUEST, message = "Bad request", response = StudentException.class)
+    })
+    void deleteStudent(@PathVariable String username);
 }
