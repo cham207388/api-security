@@ -16,13 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.time.Duration;
 import java.time.LocalDate;
 
 
 /**
  * This is an authentication filter. An authenticated user will receive a jwt token in the header
  * Authorization = Bearer jwtToken
+ *
+ * This class will be triggered anytime a user logs in
  */
 @RequiredArgsConstructor
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

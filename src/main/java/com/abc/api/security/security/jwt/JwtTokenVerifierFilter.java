@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 /**
  * This is an authorization filter. It verifies the authenticated client and determines if this
  * client is authorized to view the requested resource
+ *
+ * This class will be triggered anytime a request is headed to a controller
  */
 @RequiredArgsConstructor
 public class JwtTokenVerifierFilter extends OncePerRequestFilter {
