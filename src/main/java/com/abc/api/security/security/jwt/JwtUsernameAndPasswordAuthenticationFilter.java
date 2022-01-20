@@ -50,8 +50,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 					authenticationRequest.getPassword()
 			);
 
+			// if user is in db: check UserDetailsSService.loadUserByUsername(username)
 			return authenticationManager.authenticate(authentication);
 
+			// otherwise, throw this exception
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
