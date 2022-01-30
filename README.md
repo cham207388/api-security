@@ -17,10 +17,7 @@ This is a Student Portal API
 * method base authorization (@PreAuthorize annotation)
 * only loggedin student and admin have access to a student's information
 * roles
-### Using Mongo DB
-* You can simply install mongo on your machine or
-* Run mongo image from docker hub (***docker run -d -p 27017:27017 mongo***)
-  * make sure to clean up after running an image. Docker leaves behind a lot of dump files
+
 ### Caching using redis
 * cache student data using @Cacheable
 * update student when updated using @CachePut
@@ -45,8 +42,10 @@ This is a Student Portal API
   * [Allow less secure apps](https://www.google.com/settings/security/lesssecureapps)
   * [Amigoscode Spring Security](https://www.youtube.com/watch?v=her_7pa0vrg)
 
-#### Database
+### Database
 I am using mongodb. At the beginning of this project, I used an installed version of \
 mongodb on my local machine. \
-On January 9th 2022, I learned to use mongodb container from docker. \
- * [Link to use mongodb container](https://www.thepolyglotdeveloper.com/2019/01/getting-started-mongodb-docker-container-deployment/)
+On January 9th 2022, I learned to use mongodb container from docker. 
+ * [Link to use mongodb container](https://www.thepolyglotdeveloper.com/2019/01/getting-started-mongodb-docker-container-deployment/) \
+ * Run mongo image from docker hub (***docker run -d -p 27017:27017 mongo***)
+   * make sure to clean up after running an image. Docker leaves behind a lot of dump files
