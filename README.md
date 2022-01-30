@@ -17,6 +17,10 @@ This is a Student Portal API
 * method base authorization (@PreAuthorize annotation)
 * only loggedin student and admin have access to a student's information
 * roles
+### Using Mongo DB
+* You can simply install mongo on your machine or
+* Run mongo image from docker hub (***docker run -d -p 27017:27017 mongo***)
+  * make sure to clean up after running an image. Docker leaves behind a lot of dump files
 ### Caching using redis
 * cache student data using @Cacheable
 * update student when updated using @CachePut
