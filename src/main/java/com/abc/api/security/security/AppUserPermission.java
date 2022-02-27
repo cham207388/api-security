@@ -3,6 +3,9 @@ package com.abc.api.security.security;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Permissions for users of the student app portal
+ */
 @Getter
 @RequiredArgsConstructor
 public enum AppUserPermission {

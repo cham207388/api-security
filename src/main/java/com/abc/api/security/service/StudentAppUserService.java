@@ -24,88 +24,89 @@ import static com.abc.api.security.security.AppUserRole.*;
 @RequiredArgsConstructor
 public class StudentAppUserService implements UserDetailsService {
 
-	private final StudentAppUserRepository studentAppUserRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final EmailService emailService;
+    private final StudentAppUserRepository studentAppUserRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-	/**
-	 * This method is call when user tries to authenticate
-	 * Once you attempt login in with username and password, this method will be call after
-	 * JwtUsernameAndPasswordAuthenticationFilter.attemptAuthentication(request, response)
-	 * @param username username
-	 * @return UserDetails having username and password
-	 * @throws UsernameNotFoundException user does not exist exception
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return studentAppUserRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
-	}
+    /**
+     * This method is call when user tries to authenticate
+     * Once you attempt login in with username and password, this method will be call after
+     * JwtUsernameAndPasswordAuthenticationFilter.attemptAuthentication(request, response)
+     *
+     * @param username username
+     * @return UserDetails having username and password
+     * @throws UsernameNotFoundException user does not exist exception
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return studentAppUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+    }
 
-	public StudentAppUserResponse findByUsername(String username) throws UsernameNotFoundException {
-		log.info("   ==== Not from cache ====");
-		return studentAppUserRepository.findByUsername(username)
-				.map(getStudentAppUserResponseFunction())
-				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
-	}
+    public StudentAppUserResponse findByUsername(String username) throws UsernameNotFoundException {
+        log.info("   ==== Not from cache ====");
+        return studentAppUserRepository.findByUsername(username)
+                .map(getStudentAppUserResponseFunction())
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+    }
 
-	public StudentAppUserResponse findById(String id) {
-		return studentAppUserRepository.findById(id)
-				.map(getStudentAppUserResponseFunction()).orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
-	}
+    public StudentAppUserResponse findById(String id) {
+        return studentAppUserRepository.findById(id)
+                .map(getStudentAppUserResponseFunction()).orElseThrow(() -> new IllegalArgumentException("Student with id: " + id + " does not exist"));
+    }
 
-	public String registerAppUser(StudentAppUser studentAppUser) {
-		studentAppUser.setPassword(passwordEncoder.encode(studentAppUser.getPassword()));
-		String role = studentAppUser.getRole().name();
-		switch (role) {
-			case "ADMIN":
-				studentAppUser.setAuthorities(ADMIN.grantedAuthorities());
-				break;
-			case "ADMIN_TRAINEE":
-				studentAppUser.setAuthorities(ADMIN_TRAINEE.grantedAuthorities());
-				break;
-			case "STUDENT":
-				studentAppUser.setAuthorities(STUDENT.grantedAuthorities());
-				break;
-			default:
-				throw new IllegalArgumentException(String.format("The role: %s does not exist!", role));
-		}
-		studentAppUser.setAccountNonExpired(true);
-		studentAppUser.setAccountNonLocked(true);
-		studentAppUser.setEnabled(true);
-		studentAppUser.setCredentialsNonExpired(true);
-		StudentAppUser appUser = studentAppUserRepository.save(studentAppUser);
-		if (appUser.getRole().name().equals("STUDENT")) {
-			emailService.sendEmail(appUser);
-		}
-		return appUser.getUsername();
-	}
+    public String registerAppUser(StudentAppUser studentAppUser) {
+        studentAppUser.setPassword(passwordEncoder.encode(studentAppUser.getPassword()));
+        String role = studentAppUser.getRole().name();
+        switch (role) {
+            case "ADMIN":
+                studentAppUser.setAuthorities(ADMIN.grantedAuthorities());
+                break;
+            case "ADMIN_TRAINEE":
+                studentAppUser.setAuthorities(ADMIN_TRAINEE.grantedAuthorities());
+                break;
+            case "STUDENT":
+                studentAppUser.setAuthorities(STUDENT.grantedAuthorities());
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("The role: %s does not exist!", role));
+        }
+        studentAppUser.setAccountNonExpired(true);
+        studentAppUser.setAccountNonLocked(true);
+        studentAppUser.setEnabled(true);
+        studentAppUser.setCredentialsNonExpired(true);
+        StudentAppUser appUser = studentAppUserRepository.save(studentAppUser);
+        if (appUser.getRole().name().equals("STUDENT")) {
+            emailService.sendEmail(appUser);
+        }
+        return appUser.getUsername();
+    }
 
-	public List<StudentAppUserResponse> findAllStudents(AppUserRole role) {
-		log.info("   === not from cache === ");
-		return studentAppUserRepository.findAllByRole(role)
-				.stream()
-				.map(getStudentAppUserResponseFunction())
-				.collect(Collectors.toList());
-	}
+    public List<StudentAppUserResponse> findAllStudents(AppUserRole role) {
+        log.info("   === not from cache === ");
+        return studentAppUserRepository.findAllByRole(role)
+                .stream()
+                .map(getStudentAppUserResponseFunction())
+                .collect(Collectors.toList());
+    }
 
-	public void deleteStudentByUsername(String username) {
-		studentAppUserRepository.deleteByUsername(username);
-	}
+    public void deleteStudentByUsername(String username) {
+        studentAppUserRepository.deleteByUsername(username);
+    }
 
-	public StudentAppUserResponse updatePassword(String username, String password) {
-		StudentAppUser appUser = studentAppUserRepository.findByUsername(username)
-				.orElseThrow();
-		appUser.setPassword(passwordEncoder.encode(password));
-		StudentAppUser studentAppUser = studentAppUserRepository.save(appUser);
-		return getStudentAppUserResponseFunction().apply(studentAppUser);
-	}
+    public StudentAppUserResponse updatePassword(String username, String password) {
+        StudentAppUser appUser = studentAppUserRepository.findByUsername(username)
+                .orElseThrow();
+        appUser.setPassword(passwordEncoder.encode(password));
+        StudentAppUser studentAppUser = studentAppUserRepository.save(appUser);
+        return getStudentAppUserResponseFunction().apply(studentAppUser);
+    }
 
-	private Function<StudentAppUser, StudentAppUserResponse> getStudentAppUserResponseFunction() {
-		return studentAppUser -> {
-			StudentAppUserResponse response = new StudentAppUserResponse();
-			BeanUtils.copyProperties(studentAppUser, response);
-			return response;
-		};
-	}
+    private Function<StudentAppUser, StudentAppUserResponse> getStudentAppUserResponseFunction() {
+        return studentAppUser -> {
+            StudentAppUserResponse response = new StudentAppUserResponse();
+            BeanUtils.copyProperties(studentAppUser, response);
+            return response;
+        };
+    }
 }

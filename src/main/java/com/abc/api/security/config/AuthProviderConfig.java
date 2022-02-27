@@ -11,21 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class AuthProviderConfig {
 
-	private final PasswordEncoder passwordEncoder;
-	private final StudentAppUserService studentAppUserService;
+    private final PasswordEncoder passwordEncoder;
+    private final StudentAppUserService studentAppUserService;
 
-	/**
-	 * Database authentication setup:
-	 *  requires:
-	 *      1- the password encoder
-	 *      2. A UserDetailsService
-	 * @return the provider
-	 */
-	@Bean
-	public DaoAuthenticationProvider daoAuthenticationProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setPasswordEncoder(passwordEncoder);
-		provider.setUserDetailsService(studentAppUserService);
-		return provider;
-	}
+    /**
+     * Database authentication setup:
+     * requires:
+     * 1- the password encoder
+     * 2. A UserDetailsService
+     *
+     * @return the provider
+     */
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setUserDetailsService(studentAppUserService);
+        return provider;
+    }
 }
