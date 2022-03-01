@@ -22,26 +22,11 @@ import static com.abc.api.security.security.AppUserRole.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StudentAppUserService implements UserDetailsService {
+public class StudentAppUserService {
 
     private final StudentAppUserRepository studentAppUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-
-    /**
-     * This method is call when user tries to authenticate
-     * Once you attempt login in with username and password, this method will be call after
-     * JwtUsernameAndPasswordAuthenticationFilter.attemptAuthentication(request, response)
-     *
-     * @param username username
-     * @return UserDetails having username and password
-     * @throws UsernameNotFoundException user does not exist exception
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return studentAppUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
-    }
 
     public StudentAppUserResponse findByUsername(String username) throws UsernameNotFoundException {
         log.info("   ==== Not from cache ====");
